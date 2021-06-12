@@ -17,81 +17,81 @@ export function checkEmptySquares(board: any, i: any) {
 
   if (board[north]?.type === 'valid') {
     if (board[north]?.value === 0 && !board[north].reveal) {
-      board[north].reveal = true;
       setTimeout(() => {
         checkEmptySquares(board, north);
       }, 10);
-    } else {
+    }
+    if (!board[north].flag) {
       board[north].reveal = true;
     }
   }
   if (board[northEast]?.type === 'valid' && !isRightEdge && !board[northEast].reveal) {
     if (board[northEast]?.value === 0) {
-      board[northEast].reveal = true;
       setTimeout(() => {
         checkEmptySquares(board, northEast);
       }, 10);
-    } else {
+    }
+    if (!board[northEast].flag) {
       board[northEast].reveal = true;
     }
   }
   if (board[east]?.type === 'valid' && !isRightEdge && !board[east].reveal) {
     if (board[east]?.value === 0) {
-      board[east].reveal = true;
       setTimeout(() => {
         checkEmptySquares(board, east);
       }, 10);
-    } else {
+    }
+    if (!board[east].flag) {
       board[east].reveal = true;
     }
   }
   if (board[southEast]?.type === 'valid' && !isRightEdge && !board[southEast].reveal) {
     if (board[southEast]?.value === 0) {
-      board[southEast].reveal = true;
       setTimeout(() => {
         checkEmptySquares(board, southEast);
       }, 10);
-    } else {
+    }
+    if (!board[southEast].flag) {
       board[southEast].reveal = true;
     }
   }
   if (board[south]?.type === 'valid' && !board[south].reveal) {
     if (board[south]?.value === 0) {
-      board[south].reveal = true;
       setTimeout(() => {
         checkEmptySquares(board, south);
       }, 10);
-    } else {
+    }
+    if (!board[south].flag) {
       board[south].reveal = true;
     }
   }
   if (board[southWest]?.type === 'valid' && !isLeftEdge && !board[southWest].reveal) {
     if (board[southWest]?.value === 0) {
-      board[southWest].reveal = true;
       setTimeout(() => {
         checkEmptySquares(board, southWest);
       }, 10);
-    } else {
+    }
+    if (!board[southWest].flag) {
       board[southWest].reveal = true;
     }
   }
   if (board[west]?.type === 'valid' && !isLeftEdge && !board[west].reveal) {
     if (board[west]?.value === 0) {
-      board[west].reveal = true;
       setTimeout(() => {
         checkEmptySquares(board, west);
       }, 10);
-    } else {
+    }
+    if (!board[west].flag) {
       board[west].reveal = true;
     }
   }
   if (board[northWest]?.type === 'valid' && !isLeftEdge && !board[northWest].reveal) {
     if (board[northWest]?.value === 0) {
-      board[northWest].reveal = true;
       setTimeout(() => {
         checkEmptySquares(board, northWest);
       }, 10);
-    } else {
+    }
+    if (!board[northWest].flag) {
       board[northWest].reveal = true;
     }
   }
@@ -110,6 +110,19 @@ export function revealBombs(board: any) {
         board[i].value = 0;
         board[i].reveal = true;
       }
+    }
+  }
+  return board;
+}
+
+export function revealAllValid(board: any) {
+  for (let i = 0; i < board.length; i++) {
+    if (board[i].type === 'valid') {
+      if (board[i].flag) continue;
+      board[i].reveal = true;
+    } else if (board[i].type === 'bomb') {
+      if (board[i].flag) continue;
+      board[i].flag = true;
     }
   }
   return board;
