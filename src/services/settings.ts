@@ -1,18 +1,22 @@
-interface standardSettings {
+interface settings {
   width: number;
   height: number;
   bombs: number;
   size?: number;
 }
 
-const settings: standardSettings = {
-  width: 10,
-  height: 10,
-  bombs: 20,
+let settings: settings = {
+  width: 0,
+  height: 0,
+  bombs: 0,
 };
 
-const size: number = settings.width * settings.height;
-
-settings.size = size;
+export function initSettings(w: number, h: number, b: number) {
+  settings.width = w;
+  settings.height = h;
+  settings.bombs = b;
+  const size: number = settings.width * settings.height;
+  settings.size = size;
+}
 
 export default settings;

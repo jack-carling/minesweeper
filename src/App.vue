@@ -1,13 +1,18 @@
 <template>
-  <Game />
+  <Settings v-if="init" @init="init = false" />
+  <Game v-else @reset="init = true" />
 </template>
 
 <script lang="ts">
+import Settings from './components/Settings.vue';
 import Game from './components/Game.vue';
 
 export default {
-  name: 'App',
+  data() {
+    return { init: true };
+  },
   components: {
+    Settings,
     Game,
   },
 };
@@ -20,12 +25,15 @@ export default {
   box-sizing: border-box;
 }
 body {
-  background-color: #eee;
-  margin: 5rem 1rem 1rem 1rem;
+  background-color: #c2c2c2;
+  font-family: 'Roboto Mono', monospace;
+  margin: 0;
 }
 #app {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 1rem;
+  padding-top: 3rem;
 }
 </style>

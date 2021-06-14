@@ -15,16 +15,17 @@
       @contextmenu.prevent="handleFlag(square)"
     />
   </div>
-  <p class="game-over" v-if="gameOver">{{ gameOverText }}</p>
+  <span class="game-over" v-if="gameOver">{{ gameOverText }}</span>
+  <button class="btn" :class="[gameOver ? 'red' : 'grey']" @click="resetGame">{{ buttonText }}</button>
 </template>
 
 <script lang="ts">
 import Square from './Square.vue';
 
-import board from '../services/board';
 import settings from '../services/settings';
 
 import { checkEmptySquares, revealBombs, revealAllValid } from '../services/squares';
+import { initBoard } from '../services/board';
 
 export default {
   components: {
@@ -38,11 +39,13 @@ export default {
       flags: 0,
       time: 0,
       timer: 0,
+      buttonText: 'Main menu',
     };
   },
+  emits: ['reset'],
   methods: {
     renderGameBoard() {
-      this.board = [...board];
+      this.board = initBoard();
       this.flags = settings.bombs;
     },
     handleSquare(square: any, index: number) {
@@ -68,7 +71,6 @@ export default {
         if (!this.flags) return;
         square.flag = true;
         this.flags--;
-        //if (this.flags === 0) this.checkWin();
       } else if (square.flag) {
         square.flag = false;
         this.flags++;
@@ -115,11 +117,13 @@ export default {
     handleLoseGame() {
       this.gameOver = true;
       this.gameOverText = 'Oh no!';
+      this.buttonText = 'Play again';
       this.handleTimer(false);
     },
     handleWinGame() {
       this.gameOver = true;
       this.gameOverText = 'Congratulations! You won!';
+      this.buttonText = 'Play again';
       this.handleTimer(false);
     },
     displayFlags() {
@@ -151,6 +155,9 @@ export default {
       } else {
         return `${m}:${s}`;
       }
+    },
+    resetGame() {
+      this.$emit('reset');
     },
   },
   mounted() {
@@ -187,12 +194,14 @@ section.info div {
   justify-content: space-between;
   align-items: center;
 }
-section.info span,
-p.game-over {
-  font-family: 'Roboto Mono', monospace;
-}
 section.info img {
   width: 30px;
   margin-right: 1rem;
+}
+span.game-over {
+  margin-top: 1rem;
+}
+button {
+  margin-top: 1rem;
 }
 </style>

@@ -30,7 +30,6 @@ div {
   width: 100%;
   height: 100%;
   background-color: #ccc;
-  font-family: 'Roboto Mono', monospace;
   font-size: 1.5rem;
   display: grid;
   place-items: center;
@@ -45,6 +44,10 @@ div.button {
   border-bottom: 2px solid #333;
   border-left: 2px solid #f2f2f2;
 }
+div.valid,
+div.bomb {
+  border: 0.5px solid #c2c2c2;
+}
 div.bomb {
   background-image: url('../assets/bomb.png');
   background-size: contain;
@@ -57,6 +60,14 @@ div.bomb-hit {
 div.no-bomb {
   background-image: url('../assets/no-bomb.png');
   background-size: contain;
+}
+span {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 span.number1 {
   color: #0200f2;
