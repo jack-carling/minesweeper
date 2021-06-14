@@ -26,6 +26,8 @@ The game board allows for customization of a width between 5-20 cells, a height 
 ## Left to do
 
 - [x] Ranges for customization
+- [x] Main menu remember last settings
+- [x] Double click to reveal adjacent squares when correct number of flags
+- [ ] How to play
 - [ ] The first click in any game will never be a mine
 - [ ] Better sorting algorithm for mines in array
-- [ ] Main menu remember last settings

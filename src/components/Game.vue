@@ -11,6 +11,7 @@
       v-for="(square, i) in board"
       :key="i"
       :square="square"
+      @dblclick="handleValue(square, i)"
       @click="handleSquare(square, i)"
       @contextmenu.prevent="handleFlag(square)"
     />
@@ -24,7 +25,13 @@ import Square from './Square.vue';
 
 import settings from '../services/settings';
 
-import { checkEmptySquares, revealBombs, revealAllValid } from '../services/squares';
+import {
+  checkEmptySquares,
+  revealBombs,
+  revealAllValid,
+  checkAdjacentFlags,
+  checkAdjacentSquares,
+} from '../services/squares';
 import { initBoard } from '../services/board';
 
 export default {
@@ -62,6 +69,23 @@ export default {
         }
       }
       square.reveal = true;
+    },
+    handleValue(square: any, index: number) {
+      if (this.gameOver) return;
+      if (square.flag) return;
+      if (!square.value) return;
+      const correctNumberFlags = checkAdjacentFlags(this.board, index, square.value);
+      if (correctNumberFlags) {
+        const result = checkAdjacentSquares(this.board, index);
+        this.board = result.board;
+        const bomb = result.bomb;
+        if (bomb.hit) {
+          const square: any = this.board[bomb.index];
+          square.type = 'bomb-hit';
+          this.board = revealBombs(this.board);
+          this.handleLoseGame();
+        }
+      }
     },
     handleFlag(square: any) {
       if (this.gameOver) return;

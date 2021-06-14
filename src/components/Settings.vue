@@ -39,11 +39,11 @@ import { initSettings } from '../services/settings';
 export default {
   data() {
     return {
-      width: 10,
-      height: 10,
-      bombs: 10,
-      maxBombs: 50,
-      difficulty: 'beginner',
+      width: localStorage.width || 10,
+      height: localStorage.height || 10,
+      bombs: localStorage.bombs || 10,
+      maxBombs: localStorage.maxBombs || 50,
+      difficulty: localStorage.difficulty ?? 'beginner',
     };
   },
   emits: ['init'],
@@ -63,6 +63,7 @@ export default {
         this.bombs = 60;
       }
       this.difficulty = difficulty;
+      this.saveLocalStorage();
     },
     playGame() {
       const w = Number(this.width);
@@ -71,6 +72,13 @@ export default {
       initSettings(w, h, b);
       this.$emit('init');
     },
+    saveLocalStorage() {
+      localStorage.width = this.width;
+      localStorage.height = this.height;
+      localStorage.bombs = this.bombs;
+      localStorage.maxBombs = this.maxBombs;
+      localStorage.difficulty = this.difficulty;
+    },
   },
   watch: {
     width() {
@@ -78,12 +86,17 @@ export default {
       if (this.bombs > this.maxBombs) {
         this.bombs = this.maxBombs;
       }
+      this.saveLocalStorage();
     },
     height() {
       this.maxBombs = Math.floor((this.width * this.height) / 2);
       if (this.bombs > this.maxBombs) {
         this.bombs = this.maxBombs;
       }
+      this.saveLocalStorage();
+    },
+    bombs() {
+      this.saveLocalStorage();
     },
   },
 };
