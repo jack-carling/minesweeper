@@ -17,7 +17,16 @@
     />
   </div>
   <span class="game-over" v-if="gameOver">{{ gameOverText }}</span>
-  <button class="btn" :class="[gameOver ? 'red' : 'grey']" @click="resetGame">{{ buttonText }}</button>
+  <section class="buttons">
+    <button class="btn" :class="[gameOver ? 'red' : 'grey']" @click="$emit('main-menu')">
+      <i class="material-icons left">home</i>
+      Menu
+    </button>
+    <button class="btn" :class="[gameOver ? 'red' : 'grey']" @click="resetGame">
+      <i class="material-icons left">replay</i>
+      {{ buttonText }}
+    </button>
+  </section>
 </template>
 
 <script lang="ts">
@@ -46,10 +55,10 @@ export default {
       flags: 0,
       time: 0,
       timer: 0,
-      buttonText: 'Main menu',
+      buttonText: 'Reset',
     };
   },
-  emits: ['reset'],
+  emits: ['main-menu'],
   methods: {
     renderGameBoard() {
       this.board = initBoard();
@@ -181,7 +190,15 @@ export default {
       }
     },
     resetGame() {
-      this.$emit('reset');
+      if (!this.timer && !this.gameOver) return;
+
+      this.handleTimer(false);
+      this.renderGameBoard();
+      this.gameOver = false;
+      this.gameOverText = '';
+      this.buttonText = 'Reset';
+      this.time = 0;
+      this.timer = 0;
     },
   },
   mounted() {
@@ -225,7 +242,10 @@ section.info img {
 span.game-over {
   margin-top: 1rem;
 }
-button {
+section.buttons {
   margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
 }
 </style>

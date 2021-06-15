@@ -1,5 +1,5 @@
 <template>
-  <h1>Minesweeper</h1>
+  <img src="../assets/logo.svg" alt="Logo" />
   <section class="difficulties">
     <button class="btn red" :class="{ 'darken-4': difficulty === 'beginner' }" @click="setDifficulty('beginner')">
       Beginner

@@ -1,6 +1,6 @@
 <template>
   <Settings v-if="init" @init="init = false" />
-  <Game v-else @reset="init = true" />
+  <Game v-else @main-menu="init = true" />
 </template>
 
 <script lang="ts">
