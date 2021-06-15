@@ -1,5 +1,9 @@
 ![Logo](https://raw.githubusercontent.com/jensengbg-jack-carling/minesweeper/e471a123355f22b924b87df15b7977dc1b1edd17/src/assets/logo.svg)
 
+## Demo
+
+[Play on Heroku](https://minesweeper-ts.herokuapp.com/)
+
 ## Description
 
 In Minesweeper, mines are scattered throughout the board, which is divided into cells. Cells have three states: uncovered, covered and flagged. A covered cell is blank and clickable, while an uncovered cell is exposed. Flagged cells are those marked by the player to indicate a potential mine location.
@@ -31,9 +35,10 @@ The game board allows for customization of a width between 5-20 cells, a height 
 
 ## Left to do
 
+- [ ] How to play
+- [ ] Mobile friendly, responsive
 - [x] Ranges for customization
 - [x] Main menu remember last settings
 - [x] Double click to reveal adjacent squares when correct number of flags
 - [x] The first click in any game will never be a mine
 - [x] Better sorting algorithm for mines in array
-- [ ] How to play
