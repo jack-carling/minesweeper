@@ -4,9 +4,11 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "start": "node \"heroku/index\""
   },
   "dependencies": {
+    "express": "^4.17.1",
     "vue": "^3.0.5"
   },
   "devDependencies": {
