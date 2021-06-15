@@ -35,9 +35,34 @@ export function initBoard() {
 
   board = [...emptyArray, ...bombsArray];
 
-  board = board.sort((): any => {
-    return Math.random() - 0.5;
-  });
+  for (let i = board.length - 1; i > 0; i--) {
+    const newIndex = Math.floor(Math.random() * (i + 1));
+    const oldValue = board[newIndex];
+    board[newIndex] = board[i];
+    board[i] = oldValue;
+  }
+
+  return board;
+}
+
+export function calcBoard(index: number) {
+  const width = settings.width;
+  const height = settings.height;
+  const size: number = width * height;
+
+  // If the first click is placing a flag, skip the bomb checking/replacing function
+  if (index !== -1) {
+    if (board[index].type === 'bomb') {
+      let position = index;
+      do {
+        position = Math.floor(Math.random() * size);
+      } while (board[position].type === 'bomb');
+      delete board[index].hit;
+      board[index].type = 'valid';
+      board[position].type = 'bomb';
+      board[position].hit = false;
+    }
+  }
 
   for (let i = 0; i < board.length; i++) {
     const north = i - width;

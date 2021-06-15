@@ -41,7 +41,7 @@ import {
   checkAdjacentFlags,
   checkAdjacentSquares,
 } from '../services/squares';
-import { initBoard } from '../services/board';
+import { initBoard, calcBoard } from '../services/board';
 
 export default {
   components: {
@@ -51,6 +51,7 @@ export default {
     return {
       board: [] as Array<Object>,
       gameOver: false,
+      first: true,
       gameOverText: '',
       flags: 0,
       time: 0,
@@ -65,9 +66,19 @@ export default {
       this.flags = settings.bombs;
     },
     handleSquare(square: any, index: number) {
+      if (!this.timer) this.handleTimer(true);
       if (this.gameOver) return;
       if (square.flag || square.reveal) return;
-      if (!this.timer) this.handleTimer(true);
+      if (this.first) {
+        this.board = calcBoard(index);
+        if (square.value === 0) {
+          this.board = checkEmptySquares(this.board, index);
+        }
+
+        this.first = false;
+        square.reveal = true;
+        return;
+      }
       if (square.value === 0) {
         if (square.type === 'bomb') {
           square.type = 'bomb-hit';
@@ -100,6 +111,11 @@ export default {
       if (this.gameOver) return;
       if (square.reveal) return;
       if (!this.timer) this.handleTimer(true);
+      if (this.first) {
+        this.first = false;
+        this.board = calcBoard(-1);
+      }
+
       if (!square.flag) {
         if (!this.flags) return;
         square.flag = true;
@@ -154,6 +170,7 @@ export default {
       this.handleTimer(false);
     },
     handleWinGame() {
+      this.flags = 0;
       this.gameOver = true;
       this.gameOverText = 'Congratulations! You won!';
       this.buttonText = 'Play again';
@@ -192,6 +209,7 @@ export default {
     resetGame() {
       if (!this.timer && !this.gameOver) return;
 
+      this.first = true;
       this.handleTimer(false);
       this.renderGameBoard();
       this.gameOver = false;
