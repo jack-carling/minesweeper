@@ -4,10 +4,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
+
 import Settings from './components/Settings.vue';
 import Game from './components/Game.vue';
 
-export default {
+export default defineComponent({
   data() {
     return { init: true };
   },
@@ -15,7 +17,7 @@ export default {
     Settings,
     Game,
   },
-};
+});
 </script>
 
 <style>

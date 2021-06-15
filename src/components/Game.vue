@@ -30,9 +30,8 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import Square from './Square.vue';
-
-import settings from '../services/settings';
 
 import {
   checkEmptySquares,
@@ -42,8 +41,9 @@ import {
   checkAdjacentSquares,
 } from '../services/squares';
 import { initBoard, calcBoard } from '../services/board';
+import settings from '../services/settings';
 
-export default {
+export default defineComponent({
   components: {
     Square,
   },
@@ -237,7 +237,7 @@ export default {
       deep: true,
     },
   },
-};
+});
 </script>
 
 <style scoped>

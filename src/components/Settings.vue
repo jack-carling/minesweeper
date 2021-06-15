@@ -34,9 +34,11 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
+
 import { initSettings } from '../services/settings';
 
-export default {
+export default defineComponent({
   data() {
     return {
       width: localStorage.width || 10,
@@ -99,7 +101,7 @@ export default {
       this.saveLocalStorage();
     },
   },
-};
+});
 </script>
 
 <style scoped>

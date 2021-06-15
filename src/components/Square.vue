@@ -1,14 +1,16 @@
 <template>
   <section ref="square">
-    <div v-if="!square.reveal" class="button" :class="{ flag: square.flag }"></div>
-    <div v-else :class="square.type">
-      <span v-if="square.value" :class="'number' + square.value">{{ square.value }}</span>
+    <div v-if="!square?.reveal" class="button" :class="{ flag: square?.flag }"></div>
+    <div v-else :class="square?.type">
+      <span v-if="square?.value" :class="'number' + square.value">{{ square?.value }}</span>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   props: {
     square: {
       type: Object,
@@ -19,7 +21,7 @@ export default {
     square.style.width = '40px';
     square.style.height = '40px';
   },
-};
+});
 </script>
 
 <style scoped>
