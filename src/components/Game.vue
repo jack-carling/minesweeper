@@ -12,8 +12,9 @@
       :key="i"
       :square="square"
       :size="squareSize"
-      @dblclick="handleValue(square, i)"
-      @click="handleSquare(square, i)"
+      @touchstart.prevent="handleTouch(square)"
+      @touchend.prevent="handleSquare(square, i, $event)"
+      @click="handleSquare(square, i, $event)"
       @contextmenu.prevent="handleFlag(square)"
     />
   </div>
@@ -58,6 +59,9 @@ export default defineComponent({
       flags: 0,
       time: 0,
       timer: 0,
+      touchTimer: 0,
+      longTouch: false,
+      stopTouch: false,
       buttonText: 'Reset',
       squareSize: 40,
     };
@@ -68,10 +72,32 @@ export default defineComponent({
       this.board = initBoard();
       this.flags = settings.bombs;
     },
-    handleSquare(square: any, index: number) {
+    handleTouch(square: any) {
+      if (square.flag) {
+        square.flag = false;
+        this.flags++;
+        this.stopTouch = true;
+        return;
+      }
+      this.stopTouch = false;
+      window.clearTimeout(this.touchTimer);
+      this.longTouch = false;
+      this.touchTimer = window.setTimeout(() => {
+        this.longTouch = true;
+      }, 100);
+    },
+    handleSquare(square: any, index: number, e: any) {
       if (!this.timer) this.handleTimer(true);
       if (this.gameOver) return;
-      if (square.flag || square.reveal) return;
+      if (square.reveal) this.handleValue(square, index);
+      if (e.type === 'touchend') {
+        if (this.stopTouch) return;
+        if (this.longTouch) {
+          this.handleFlag(square);
+          return;
+        }
+      }
+      if (square.flag) return;
       if (this.first) {
         this.board = calcBoard(index);
         if (square.value === 0) {

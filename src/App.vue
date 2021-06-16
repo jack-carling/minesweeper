@@ -35,7 +35,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem;
-  padding-top: 3rem;
+  padding: 3rem 1rem;
 }
 </style>

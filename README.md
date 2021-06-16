@@ -21,9 +21,15 @@ npm install
 npm run dev
 ```
 
-## Double-click
+## Mobile
 
-If a player double-clicks an uncovered cell containing a number between 1-9 it will open all of the adjacent and diagonal cells if the adjacent and/or diagonal cells have the same number of flags as the cell clicked. This allows the game to be played at a faster pace since it doesn't require the player to click every single cell.
+The game is responsive and provides an alternative way to place flags on a mobile device. If the player holds down a cell for a bit longer instead of simply tapping it a flag will be placed instead. The flag can be removed by simply tapping the same cell again.
+
+## Faster game play
+
+If a player clicks on an uncovered cell containing a number between 1-9 it will open all of the adjacent and diagonal cells if the adjacent and/or diagonal cells have the same number of flags as the cell clicked. This allows the game to be played at a faster pace since it doesn't require the player to click every single cell.
+
+This was previously by double-clicking, but has since changed to a single left-click.
 
 ## Flagged win
 
@@ -37,7 +43,7 @@ The game board allows for customization of a width between 5-20 cells, a height 
 
 - [ ] How to play
 - [ ] Highscores
-- [ ] Mobile friendly, another way to place a flag
+- [x] Mobile friendly, another way to place a flag
 - [x] Responsive
 - [x] Ranges for customization
 - [x] Main menu remember last settings
