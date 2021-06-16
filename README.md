@@ -31,12 +31,14 @@ Compared to certain versions of Minesweeper, this edition will check if the play
 
 ## Custom games
 
-The game board allows for customization of a width between 5-20 cells, a height between 5-15 and a maximum number of mines corresponding to half the amount of total cells.
+The game board allows for customization of a width between 5-20 cells, a height between 5-15 and a maximum number of mines corresponding to 30% of the amount of total cells.
 
 ## Left to do
 
 - [ ] How to play
-- [ ] Mobile friendly, responsive
+- [ ] Highscores
+- [ ] Mobile friendly, another way to place a flag
+- [x] Responsive
 - [x] Ranges for customization
 - [x] Main menu remember last settings
 - [x] Double click to reveal adjacent squares when correct number of flags

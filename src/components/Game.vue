@@ -11,6 +11,7 @@
       v-for="(square, i) in board"
       :key="i"
       :square="square"
+      :size="squareSize"
       @dblclick="handleValue(square, i)"
       @click="handleSquare(square, i)"
       @contextmenu.prevent="handleFlag(square)"
@@ -41,6 +42,7 @@ import {
   checkAdjacentSquares,
 } from '../services/squares';
 import { initBoard, calcBoard } from '../services/board';
+import { capitalizeFirstLetter } from '../services/text';
 import settings from '../services/settings';
 
 export default defineComponent({
@@ -57,6 +59,7 @@ export default defineComponent({
       time: 0,
       timer: 0,
       buttonText: 'Reset',
+      squareSize: 40,
     };
   },
   emits: ['main-menu'],
@@ -177,7 +180,11 @@ export default defineComponent({
       this.handleTimer(false);
     },
     displayFlags() {
-      return this.flags.toString().padStart(3, '0');
+      const { difficulty, width, height, bombs } = localStorage;
+      const custom = `Custom ${width}x${height}`;
+      const difficultyText = capitalizeFirstLetter(difficulty) || custom;
+      const flags = this.flags.toString().padStart(3, '0');
+      return `${flags} | ${difficultyText} (${bombs})`;
     },
     displayTime() {
       const hours = Math.floor(this.time / 3600);
@@ -206,6 +213,11 @@ export default defineComponent({
         return `${m}:${s}`;
       }
     },
+    handleKey(e: any) {
+      if (e.code === 'KeyR') {
+        this.resetGame();
+      }
+    },
     resetGame() {
       if (!this.timer && !this.gameOver) return;
 
@@ -218,16 +230,32 @@ export default defineComponent({
       this.time = 0;
       this.timer = 0;
     },
+    calcSize() {
+      const currentWidth = window.innerWidth;
+      const maxWidth = settings.width * 40 + 32; // + 2rem
+
+      if (currentWidth < maxWidth) {
+        this.squareSize = (currentWidth - 32) / settings.width;
+      }
+
+      const gameBoard = this.$refs.game as HTMLElement;
+      const infoSection = this.$refs.info as HTMLElement;
+      const width = settings.width * this.squareSize + 'px';
+      const height = settings.height * this.squareSize + 'px';
+      gameBoard.style.width = width;
+      gameBoard.style.height = height;
+      infoSection.style.width = width;
+    },
   },
   mounted() {
     this.renderGameBoard();
-    const gameBoard = this.$refs.game as HTMLElement;
-    const infoSection = this.$refs.info as HTMLElement;
-    const width = settings.width * 40 + 'px';
-    const height = settings.height * 40 + 'px';
-    gameBoard.style.width = width;
-    gameBoard.style.height = height;
-    infoSection.style.width = width;
+    this.calcSize();
+    window.addEventListener('keyup', this.handleKey);
+    window.addEventListener('resize', this.calcSize);
+  },
+  beforeUnmount() {
+    window.removeEventListener('keyup', this.handleKey);
+    window.removeEventListener('resize', this.calcSize);
   },
   watch: {
     board: {
@@ -259,11 +287,17 @@ section.info img {
 }
 span.game-over {
   margin-top: 1rem;
+  text-align: center;
 }
 section.buttons {
   margin-top: 1rem;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+}
+@media only screen and (max-width: 350px) {
+  section.buttons {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 </style>

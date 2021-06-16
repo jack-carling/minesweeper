@@ -15,11 +15,28 @@ export default defineComponent({
     square: {
       type: Object,
     },
+    size: {
+      type: Number,
+    },
+  },
+  methods: {
+    setSize() {
+      const square = this.$refs.square as HTMLElement;
+
+      const size: number = this.size || 40;
+      square.style.width = size + 'px';
+      square.style.height = size + 'px';
+      const fontSize = Math.ceil(size * 0.6);
+      square.style.fontSize = fontSize + 'px';
+    },
   },
   mounted() {
-    const square = this.$refs.square as HTMLElement;
-    square.style.width = '40px';
-    square.style.height = '40px';
+    this.setSize();
+  },
+  watch: {
+    size() {
+      this.setSize();
+    },
   },
 });
 </script>
@@ -32,7 +49,6 @@ div {
   width: 100%;
   height: 100%;
   background-color: #ccc;
-  font-size: 1.5rem;
   display: grid;
   place-items: center;
 }
@@ -41,10 +57,11 @@ div.flag {
   background-size: contain;
 }
 div.button {
-  border-top: 2px solid #f2f2f2;
-  border-right: 2px solid #333;
-  border-bottom: 2px solid #333;
-  border-left: 2px solid #f2f2f2;
+  --border-size: 1px;
+  border-top: var(--border-size) solid #f2f2f2;
+  border-right: var(--border-size) solid #333;
+  border-bottom: var(--border-size) solid #333;
+  border-left: var(--border-size) solid #f2f2f2;
 }
 div.valid,
 div.bomb {

@@ -44,7 +44,7 @@ export default defineComponent({
       width: localStorage.width || 10,
       height: localStorage.height || 10,
       bombs: localStorage.bombs || 10,
-      maxBombs: localStorage.maxBombs || 50,
+      maxBombs: localStorage.maxBombs || 30,
       difficulty: localStorage.difficulty ?? 'beginner',
     };
   },
@@ -84,14 +84,14 @@ export default defineComponent({
   },
   watch: {
     width() {
-      this.maxBombs = Math.floor((this.width * this.height) / 2);
+      this.maxBombs = Math.floor(this.width * this.height * 0.3);
       if (this.bombs > this.maxBombs) {
         this.bombs = this.maxBombs;
       }
       this.saveLocalStorage();
     },
     height() {
-      this.maxBombs = Math.floor((this.width * this.height) / 2);
+      this.maxBombs = Math.floor(this.width * this.height * 0.3);
       if (this.bombs > this.maxBombs) {
         this.bombs = this.maxBombs;
       }
@@ -121,6 +121,7 @@ section.range {
 }
 input[type='range'] {
   width: 400px;
+  max-width: calc(100vw - 2rem);
   border: none !important;
 }
 input[type='range']::-webkit-slider-runnable-track {
@@ -137,5 +138,13 @@ input[type='range']::-moz-range-thumb {
 }
 button.play {
   margin-top: 3rem;
+}
+img {
+  max-width: 100%;
+}
+@media only screen and (max-width: 650px) {
+  section.difficulties {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>
