@@ -19,18 +19,23 @@
 
   <section class="range">
     <span>Width: {{ width }}</span>
-    <input type="range" min="5" max="20" v-model="width" @input="difficulty = ''" />
+    <input type="range" :min="smoothRange(5)" :max="smoothRange(20)" v-model="smoothWidth" @input="difficulty = ''" />
   </section>
   <section class="range">
     <span>Height: {{ height }}</span>
-    <input type="range" min="5" max="15" v-model="height" @input="difficulty = ''" />
+    <input type="range" :min="smoothRange(5)" :max="smoothRange(15)" v-model="smoothHeight" @input="difficulty = ''" />
   </section>
   <section class="range">
     <span>Mines: {{ bombs }}</span>
-    <input type="range" min="1" :max="maxBombs" v-model="bombs" @input="difficulty = ''" />
+    <input type="range" :min="smoothRange(1)" :max="smoothMax" v-model="smoothBombs" @input="difficulty = ''" />
   </section>
 
   <button class="btn red play" @click="playGame">Play</button>
+
+  <section class="buttons">
+    <button class="btn grey" @click="$emit('show-help')"><i class="material-icons left">help</i>How to play</button>
+    <!-- <button class="btn grey"><i class="material-icons left">emoji_events</i>Highscores</button> -->
+  </section>
 </template>
 
 <script lang="ts">
@@ -41,6 +46,10 @@ import { initSettings } from '../services/settings';
 export default defineComponent({
   data() {
     return {
+      smoothWidth: 0,
+      smoothHeight: 0,
+      smoothBombs: 0,
+      smoothMax: 0,
       width: localStorage.width || 10,
       height: localStorage.height || 10,
       bombs: localStorage.bombs || 10,
@@ -48,7 +57,7 @@ export default defineComponent({
       difficulty: localStorage.difficulty ?? 'beginner',
     };
   },
-  emits: ['init'],
+  emits: ['init', 'show-help'],
   methods: {
     setDifficulty(difficulty: string) {
       if (difficulty === 'beginner') {
@@ -64,8 +73,15 @@ export default defineComponent({
         this.height = 15;
         this.bombs = 60;
       }
+      this.smoothWidth = this.width * 1000;
+      this.smoothHeight = this.height * 1000;
+      this.smoothBombs = this.bombs * 1000;
+      this.smoothMax = this.maxBombs * 1000;
       this.difficulty = difficulty;
       this.saveLocalStorage();
+    },
+    smoothRange(value: number) {
+      return value * 1000;
     },
     playGame() {
       const w = Number(this.width);
@@ -82,22 +98,45 @@ export default defineComponent({
       localStorage.difficulty = this.difficulty;
     },
   },
+  mounted() {
+    this.smoothWidth = this.width * 1000;
+    this.smoothHeight = this.height * 1000;
+    this.smoothBombs = this.bombs * 1000;
+    this.smoothMax = this.maxBombs * 1000;
+  },
   watch: {
-    width() {
-      this.maxBombs = Math.floor(this.width * this.height * 0.3);
+    smoothWidth() {
+      this.width = Math.round(this.smoothWidth / 1000);
+      this.maxBombs = Math.round(this.width * this.height * 0.3);
+      this.smoothMax = (this.smoothWidth / 1000) * (this.smoothHeight / 1000) * 0.3;
+      this.smoothMax = Number(this.smoothMax.toFixed(3)) * 1000;
+
       if (this.bombs > this.maxBombs) {
         this.bombs = this.maxBombs;
       }
+      if (this.smoothBombs > this.smoothMax) {
+        this.smoothBombs = this.smoothMax;
+      }
+
       this.saveLocalStorage();
     },
-    height() {
-      this.maxBombs = Math.floor(this.width * this.height * 0.3);
+    smoothHeight() {
+      this.height = Math.round(this.smoothHeight / 1000);
+      this.maxBombs = Math.round(this.width * this.height * 0.3);
+      this.smoothMax = (this.smoothWidth / 1000) * (this.smoothHeight / 1000) * 0.3;
+      this.smoothMax = Number(this.smoothMax.toFixed(3)) * 1000;
+
       if (this.bombs > this.maxBombs) {
         this.bombs = this.maxBombs;
       }
+      if (this.smoothBombs > this.smoothMax) {
+        this.smoothBombs = this.smoothMax;
+      }
+
       this.saveLocalStorage();
     },
-    bombs() {
+    smoothBombs() {
+      this.bombs = Math.round(this.smoothBombs / 1000);
       this.saveLocalStorage();
     },
   },
@@ -114,6 +153,12 @@ section.difficulties {
   gap: 1rem;
   margin-top: 2rem;
 }
+section.buttons {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
 section.range {
   display: flex;
   flex-direction: column;
@@ -123,18 +168,25 @@ input[type='range'] {
   width: 400px;
   max-width: calc(100vw - 2rem);
   border: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 input[type='range']::-webkit-slider-runnable-track {
   background: #f2f2f2;
+  height: 2px;
 }
 input[type='range']::-moz-range-track {
   background: #f2f2f2;
 }
 input[type='range']::-webkit-slider-thumb {
   background: #f44336;
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
 }
 input[type='range']::-moz-range-thumb {
   background: #f44336;
+  width: 24px;
+  height: 24px;
 }
 button.play {
   margin-top: 3rem;
