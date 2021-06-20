@@ -82,8 +82,10 @@ export default defineComponent({
   mounted() {
     const content = this.$refs.content as HTMLElement;
 
-    if (window.innerHeight < content.clientHeight) {
+    if (window.innerHeight < content.clientHeight + 32) {
       this.showScrollButton = true;
+    } else {
+      content.style.alignSelf = 'center';
     }
   },
 });

@@ -1,8 +1,11 @@
 <template>
+  <transition name="fade">
+    <Prompt :time="time" v-if="showPrompt" @close-prompt="showPrompt = false" />
+  </transition>
   <section class="info" ref="info">
     <div>
       <img src="../assets/flag.png" alt="" />
-      <span>{{ displayFlags() }}</span>
+      <span v-html="displayInfo()"></span>
     </div>
     <span>{{ displayTime() }}</span>
   </section>
@@ -29,11 +32,16 @@
       {{ buttonText }}
     </button>
   </section>
+  <transition name="pop">
+    <AutoSave v-if="autoSave" />
+  </transition>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Square from './Square.vue';
+import Prompt from './Prompt.vue';
+import AutoSave from './AutoSave.vue';
 
 import {
   checkEmptySquares,
@@ -44,11 +52,15 @@ import {
 } from '../services/squares';
 import { initBoard, calcBoard } from '../services/board';
 import { capitalizeFirstLetter } from '../services/text';
+import { saveHighscoreDatabase } from '../services/highscore';
+import { time } from '../services/time';
 import settings from '../services/settings';
 
 export default defineComponent({
   components: {
+    Prompt,
     Square,
+    AutoSave,
   },
   data() {
     return {
@@ -64,6 +76,9 @@ export default defineComponent({
       stopTouch: false,
       buttonText: 'Reset',
       squareSize: 40,
+      showPrompt: false,
+      autoSave: false,
+      autoSaveTimeout: 0,
     };
   },
   emits: ['main-menu'],
@@ -156,7 +171,7 @@ export default defineComponent({
     },
     handleTimer(start: boolean) {
       if (start) {
-        this.timer = setInterval(() => {
+        this.timer = window.setInterval(() => {
           this.time++;
         }, 1000);
       } else {
@@ -199,47 +214,30 @@ export default defineComponent({
       this.handleTimer(false);
     },
     handleWinGame() {
+      if (this.gameOver) return;
       this.flags = 0;
       this.gameOver = true;
       this.gameOverText = 'Congratulations! You won!';
       this.buttonText = 'Play again';
       this.handleTimer(false);
+      this.handlePrompt();
     },
-    displayFlags() {
+    displayInfo() {
       const { difficulty, width, height, bombs } = localStorage;
-      const custom = `Custom ${width}x${height}`;
-      const difficultyText = capitalizeFirstLetter(difficulty) || custom;
+      const custom = `${width}x${height}`;
+      const difficultyText = capitalizeFirstLetter(difficulty) || `Custom ${custom}`;
       const flags = this.flags.toString().padStart(3, '0');
-      return `${flags} | ${difficultyText} (${bombs})`;
+      if (this.squareSize < 30) {
+        return `${flags}<br />${custom} (${bombs})`;
+      } else {
+        return `${flags} | ${difficultyText} (${bombs})`;
+      }
     },
     displayTime() {
-      const hours = Math.floor(this.time / 3600);
-      const minutes = Math.floor((this.time - hours * 3600) / 60);
-      const seconds = this.time - hours * 3600 - minutes * 60;
-
-      let h, m, s;
-
-      if (minutes < 10) {
-        m = '0' + minutes.toString();
-      } else {
-        m = minutes.toString();
-      }
-
-      if (seconds < 10) {
-        s = '0' + seconds.toString();
-      } else {
-        s = seconds.toString();
-      }
-
-      h = hours.toString();
-
-      if (hours > 0) {
-        return `${h}:${m}:${s}`;
-      } else {
-        return `${m}:${s}`;
-      }
+      return time(this.time);
     },
     handleKey(e: any) {
+      if (this.showPrompt) return;
       if (e.code === 'KeyR') {
         this.resetGame();
       }
@@ -271,6 +269,27 @@ export default defineComponent({
       gameBoard.style.width = width;
       gameBoard.style.height = height;
       infoSection.style.width = width;
+    },
+    handlePrompt() {
+      window.clearTimeout(this.autoSaveTimeout);
+      let skip = sessionStorage.skipPrompt || 'false';
+      skip = JSON.parse(skip);
+
+      let save = localStorage.saveScore || 'false';
+      save = JSON.parse(save);
+
+      if (!skip) {
+        this.showPrompt = true;
+      } else {
+        if (save) {
+          const time: number = this.time || 0;
+          saveHighscoreDatabase(time);
+          this.autoSave = true;
+          this.autoSaveTimeout = window.setTimeout(() => {
+            this.autoSave = false;
+          }, 3000);
+        }
+      }
     },
   },
   mounted() {
@@ -325,5 +344,13 @@ section.buttons {
   section.buttons {
     grid-template-columns: repeat(1, 1fr);
   }
+}
+.pop-enter-active {
+  animation: flipInX;
+  animation-duration: 1s;
+}
+.pop-leave-to {
+  animation: flipOutX;
+  animation-duration: 1s;
 }
 </style>

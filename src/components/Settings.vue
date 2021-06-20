@@ -34,7 +34,10 @@
 
   <section class="buttons">
     <button class="btn grey" @click="$emit('show-help')"><i class="material-icons left">help</i>How to play</button>
-    <!-- <button class="btn grey"><i class="material-icons left">emoji_events</i>Highscores</button> -->
+    <button class="btn grey highscore" @click="$emit('show-highscores')">
+      <i class="material-icons left">emoji_events</i>Highscores
+      <div class="btn-floating pulse red">NEW</div>
+    </button>
   </section>
 </template>
 
@@ -57,7 +60,7 @@ export default defineComponent({
       difficulty: localStorage.difficulty ?? 'beginner',
     };
   },
-  emits: ['init', 'show-help'],
+  emits: ['init', 'show-help', 'show-highscores'],
   methods: {
     setDifficulty(difficulty: string) {
       if (difficulty === 'beginner') {
@@ -155,7 +158,7 @@ section.difficulties {
 }
 section.buttons {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-top: 2rem;
 }
@@ -169,6 +172,9 @@ input[type='range'] {
   max-width: calc(100vw - 2rem);
   border: none !important;
   -webkit-tap-highlight-color: transparent;
+}
+input[type='range']:focus {
+  outline: none !important;
 }
 input[type='range']::-webkit-slider-runnable-track {
   background: #f2f2f2;
@@ -194,9 +200,25 @@ button.play {
 img {
   max-width: 100%;
 }
+button.highscore {
+  position: relative;
+}
+button.highscore div {
+  position: absolute;
+  right: 0;
+  left: 0;
+  margin: auto;
+  bottom: -35px;
+  font-size: 0.8rem;
+}
 @media only screen and (max-width: 650px) {
   section.difficulties {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media only screen and (max-width: 375px) {
+  section.buttons {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 </style>

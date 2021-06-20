@@ -2,7 +2,10 @@
   <transition name="fade">
     <HowToPlay v-if="showHelp" @close-help="showHelp = false" />
   </transition>
-  <Settings v-if="init" @init="init = false" @show-help="showHelp = true" />
+  <transition name="fade">
+    <Highscores v-if="showHighscores" @close-highscores="showHighscores = false" />
+  </transition>
+  <Settings v-if="init" @init="init = false" @show-help="showHelp = true" @show-highscores="showHighscores = true" />
   <Game v-else @main-menu="init = true" />
 </template>
 
@@ -10,6 +13,7 @@
 import { defineComponent } from 'vue';
 
 import HowToPlay from './components/HowToPlay.vue';
+import Highscores from './components/Highscores.vue';
 import Settings from './components/Settings.vue';
 import Game from './components/Game.vue';
 
@@ -18,10 +22,12 @@ export default defineComponent({
     return {
       init: true,
       showHelp: false,
+      showHighscores: false,
     };
   },
   components: {
     HowToPlay,
+    Highscores,
     Settings,
     Game,
   },
@@ -43,7 +49,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 3rem 1rem;
+  padding: 3rem 1rem 5rem 1rem;
 }
 .fade-enter-active,
 .fade-leave-active {
