@@ -42,8 +42,10 @@ section {
   right: 1rem;
   z-index: 999;
   font-size: 0.8rem;
+  box-shadow: 0.5rem 0.5rem rgba(0, 0, 0, 0.2);
 }
 section i {
   cursor: pointer;
+  margin-left: 0.5rem;
 }
 </style>

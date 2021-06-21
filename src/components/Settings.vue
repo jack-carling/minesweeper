@@ -35,7 +35,7 @@
   <section class="buttons">
     <button class="btn grey" @click="$emit('show-help')"><i class="material-icons left">help</i>How to play</button>
     <button class="btn grey highscore" @click="$emit('show-highscores')">
-      <i class="material-icons left">emoji_events</i>Highscores
+      <i class="material-icons left">emoji_events</i>High scores
       <div class="btn-floating pulse red">NEW</div>
     </button>
   </section>

@@ -1,4 +1,4 @@
-![Logo](https://raw.githubusercontent.com/jensengbg-jack-carling/minesweeper/e471a123355f22b924b87df15b7977dc1b1edd17/src/assets/logo.svg)
+[![Logo](https://raw.githubusercontent.com/jensengbg-jack-carling/minesweeper/e471a123355f22b924b87df15b7977dc1b1edd17/src/assets/logo.svg)](https://minesweeper-ts.herokuapp.com/)
 
 ## Demo
 
@@ -14,39 +14,37 @@ If the first click is a left-click it will never be a mine in any game.
 
 To win the game, players must uncover all non-mine cells, at which point, the timer is stopped. Flagging all the mined cells is not required.
 
-## Install
+## Installation
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Mobile
+For the backend you will need a [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) account. Create a `.env` file in the root directory and insert `MONGO_DB=` followed by your connection string. To run the database open a second terminal:
+
+```bash
+npm start
+```
+
+## Responsive
 
 The game is responsive and provides an alternative way to place flags on a mobile device. If the player holds down a cell for a bit longer instead of simply tapping it a flag will be placed instead. The flag can be removed by simply tapping the same cell again.
 
-## Faster game play
+There is also a phone mode on smaller devices that will facilitate if the cells are rendered too small. If this mode is enabled the board can be scrolled left or right using two fingers.
 
-If a player clicks on an uncovered cell containing a number between 1-9 it will open all of the adjacent and diagonal cells if the adjacent and/or diagonal cells have the same number of flags as the cell clicked. This allows the game to be played at a faster pace since it doesn't require the player to click every single cell.
+## Chording
 
-This was previously by double-clicking, but has since changed to a single left-click.
+If a player clicks on an uncovered cell containing a number between 1-9 it will open all of the adjacent cells if the adjacent cells have the same number of flags as the cell clicked. This allows the game to be played at a faster pace since it doesn't require the player to click every single cell.
 
 ## Flagged win
 
-Compared to certain versions of Minesweeper, this edition will check if the player wins in two different ways. Either the player uncoveres all non-mined cells, or the player has flagged all cells containing mines. This will ensure that the game cannot be lost at the end by a 50/50 guess for example.
+Compared to certain versions of Minesweeper, this edition will check if the player wins in two different ways. Either the player uncovers all non-mined cells, or the player has flagged all cells containing mines. This will ensure that the game cannot be lost at the end by a 50/50 guess.
 
 ## Custom games
 
 The game board allows for customization of a width between 5-20 cells, a height between 5-15 and a maximum number of mines corresponding to 30% of the amount of total cells.
 
-## Left to do
+## High scores
 
-- [ ] How to play
-- [ ] Highscores
-- [x] Mobile friendly, another way to place a flag
-- [x] Responsive
-- [x] Ranges for customization
-- [x] Main menu remember last settings
-- [x] Double click to reveal adjacent squares when correct number of flags
-- [x] The first click in any game will never be a mine
-- [x] Better sorting algorithm for mines in array
+High scores are saved only with the users permission and are divided into four categories. Beginner, intermediate and expert will simply sort the high scores by time while custom will compare size with the amount of mines and sort by the highest number of mines per squares followed by shortest completion time. The top 25 scores are displayed.

@@ -1,7 +1,7 @@
 <template>
   <section>
     <i class="material-icons">emoji_events</i>
-    <span>Auto-saving highscore...</span>
+    <span>Auto-saving high-score...</span>
   </section>
 </template>
 

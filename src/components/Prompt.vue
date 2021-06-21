@@ -2,7 +2,7 @@
   <main ref="overlay">
     <section class="overlay" ref="content">
       <span class="header">Congratulations! You won!</span>
-      <span>Enter your name and click save to take part in the highscores!</span>
+      <span>Enter your name and click save to take part in the high-scores!</span>
       <div class="input-field">
         <input id="name" type="text" autocomplete="off" v-model="name" @keyup.enter="saveHighscore" />
         <label ref="name" for="name">Name</label>

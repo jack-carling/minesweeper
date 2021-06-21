@@ -4,7 +4,7 @@
       <div class="close" @click="$emit('close-highscores')">
         <i class="material-icons">cancel</i>
       </div>
-      <span class="header">Highscores</span>
+      <span class="header">High Scores</span>
       <label>Difficulty</label>
       <div class="select">
         <i class="material-icons">expand_more</i>
