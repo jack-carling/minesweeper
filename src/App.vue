@@ -1,4 +1,5 @@
 <template>
+  <Cookies />
   <transition name="fade">
     <HowToPlay v-if="showHelp" @close-help="showHelp = false" />
   </transition>
@@ -12,6 +13,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+import Cookies from './components/Cookies.vue';
 import HowToPlay from './components/HowToPlay.vue';
 import Highscores from './components/Highscores.vue';
 import Settings from './components/Settings.vue';
@@ -26,6 +28,7 @@ export default defineComponent({
     };
   },
   components: {
+    Cookies,
     HowToPlay,
     Highscores,
     Settings,

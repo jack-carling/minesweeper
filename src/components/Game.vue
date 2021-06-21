@@ -9,17 +9,29 @@
     </div>
     <span>{{ displayTime() }}</span>
   </section>
-  <div class="game" ref="game">
-    <Square
-      v-for="(square, i) in board"
-      :key="i"
-      :square="square"
-      :size="squareSize"
-      @touchstart.prevent="handleTouch(square)"
-      @touchend.prevent="handleSquare(square, i, $event)"
-      @click="handleSquare(square, i, $event)"
-      @contextmenu.prevent="handleFlag(square)"
-    />
+  <div class="game-wrapper" ref="wrapper">
+    <transition name="fade">
+      <div class="phone-info" v-if="showPhoneModeInfo" @click="showPhoneModeInfo = false">
+        <i class="material-icons">lightbulb</i>
+        <p>In this mode the board is larger to facilitate playing on a device with a smaller screen.</p>
+        <p>Use two fingers to scroll left and right on the board.</p>
+        <p>Use one finger and scroll outside the board to go up and down.</p>
+        <button class="btn grey lighten-5 btn-small grey-text text-darken-4">OK</button>
+      </div>
+    </transition>
+    <div class="game" ref="game">
+      <Square
+        v-for="(square, i) in board"
+        :key="i"
+        :square="square"
+        :size="squareSize"
+        @touchstart.prevent="handleTouch(square, $event)"
+        @touchmove.prevent="scrollWrapper"
+        @touchend.prevent="handleSquare(square, i, $event)"
+        @click="handleSquare(square, i, $event)"
+        @contextmenu.prevent="handleFlag(square)"
+      />
+    </div>
   </div>
   <span class="game-over" v-if="gameOver">{{ gameOverText }}</span>
   <section class="buttons">
@@ -32,8 +44,11 @@
       {{ buttonText }}
     </button>
   </section>
+  <button class="btn grey mode" @click="togglePhoneMode" v-if="phoneMode || squareSize < 40">
+    <i class="material-icons left">phone_iphone</i>{{ phoneModeButton }}
+  </button>
   <transition name="pop">
-    <AutoSave v-if="autoSave" />
+    <AutoSave v-if="autoSave" class="auto-save" />
   </transition>
 </template>
 
@@ -79,15 +94,52 @@ export default defineComponent({
       showPrompt: false,
       autoSave: false,
       autoSaveTimeout: 0,
+      scrolling: false,
+      scrollPosition: 0,
+      phoneMode: false,
+      showPhoneModeInfo: false,
     };
   },
   emits: ['main-menu'],
+  computed: {
+    phoneModeButton(): String {
+      if (this.phoneMode) {
+        return 'Mode On';
+      } else {
+        return 'Mode Off';
+      }
+    },
+  },
   methods: {
     renderGameBoard() {
       this.board = initBoard();
       this.flags = settings.bombs;
     },
-    handleTouch(square: any) {
+    scrollWrapper(e: any) {
+      if (!this.scrolling) return;
+      const gameBoardWrapper = this.$refs.wrapper as HTMLElement;
+      const distanceX = this.scrollPosition - e.touches[0].screenX;
+      gameBoardWrapper.scrollTo({ left: distanceX });
+    },
+    togglePhoneMode() {
+      this.phoneMode = !this.phoneMode;
+      localStorage.phoneMode = this.phoneMode;
+      this.calcSize();
+      if (this.phoneMode) {
+        this.showPhoneModeInfo = true;
+      } else {
+        this.showPhoneModeInfo = false;
+      }
+    },
+    handleTouch(square: any, e: any) {
+      if (e.touches.length === 2) {
+        this.scrolling = true;
+        const gameBoardWrapper = this.$refs.wrapper as HTMLElement;
+        this.scrollPosition = gameBoardWrapper.scrollLeft + e.touches[0].screenX;
+      } else {
+        this.scrolling = false;
+      }
+      if (this.scrolling) return;
       if (square.flag) {
         square.flag = false;
         this.flags++;
@@ -106,6 +158,7 @@ export default defineComponent({
       if (this.gameOver) return;
       if (square.reveal) this.handleValue(square, index);
       if (e.type === 'touchend') {
+        if (this.scrolling) return;
         if (this.stopTouch) return;
         if (this.longTouch) {
           this.handleFlag(square);
@@ -227,7 +280,7 @@ export default defineComponent({
       const custom = `${width}x${height}`;
       const difficultyText = capitalizeFirstLetter(difficulty) || `Custom ${custom}`;
       const flags = this.flags.toString().padStart(3, '0');
-      if (this.squareSize < 30) {
+      if (this.squareSize < 30 || width < 8) {
         return `${flags}<br />${custom} (${bombs})`;
       } else {
         return `${flags} | ${difficultyText} (${bombs})`;
@@ -256,19 +309,22 @@ export default defineComponent({
     },
     calcSize() {
       const currentWidth = window.innerWidth;
-      const maxWidth = settings.width * 40 + 32; // + 2rem
 
-      if (currentWidth < maxWidth) {
-        this.squareSize = (currentWidth - 32) / settings.width;
+      let newSize = (currentWidth - 32) / settings.width;
+      if (this.phoneMode || newSize >= 40) {
+        newSize = 40;
       }
 
+      this.squareSize = newSize;
+
       const gameBoard = this.$refs.game as HTMLElement;
+      const gameBoardWrapper = this.$refs.wrapper as HTMLElement;
       const infoSection = this.$refs.info as HTMLElement;
       const width = settings.width * this.squareSize + 'px';
       const height = settings.height * this.squareSize + 'px';
       gameBoard.style.width = width;
       gameBoard.style.height = height;
-      infoSection.style.width = width;
+      infoSection.style.width = gameBoardWrapper.offsetWidth + 'px';
     },
     handlePrompt() {
       window.clearTimeout(this.autoSaveTimeout);
@@ -293,6 +349,14 @@ export default defineComponent({
     },
   },
   mounted() {
+    let phoneMode = localStorage.phoneMode || 'false';
+    phoneMode = JSON.parse(phoneMode);
+    if (this.squareSize === 40) {
+      this.phoneMode = false;
+    } else {
+      this.phoneMode = phoneMode;
+    }
+
     this.renderGameBoard();
     this.calcSize();
     window.addEventListener('keyup', this.handleKey);
@@ -318,7 +382,6 @@ div.game {
   background-color: #eee;
   display: flex;
   flex-wrap: wrap;
-  margin-top: 1rem;
 }
 section.info,
 section.info div {
@@ -340,17 +403,50 @@ section.buttons {
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
+div.game-wrapper {
+  max-width: 100%;
+  height: 100%;
+  margin-top: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+div.phone-info {
+  max-width: calc(100% - 2rem);
+  height: min-content;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 1rem;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+}
+button.mode {
+  margin-top: 1rem;
+}
+.auto-save {
+  position: fixed;
+  left: 1rem;
+  bottom: 3rem;
+}
 @media only screen and (max-width: 350px) {
   section.buttons {
     grid-template-columns: repeat(1, 1fr);
   }
 }
 .pop-enter-active {
-  animation: flipInX;
+  animation: flipInY;
   animation-duration: 1s;
 }
 .pop-leave-to {
-  animation: flipOutX;
+  animation: flipOutY;
   animation-duration: 1s;
 }
 </style>
