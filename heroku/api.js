@@ -29,7 +29,7 @@ module.exports = (app) => {
     let response = { success: true };
     let data;
 
-    const token = process.env.VITE_T;
+    const token = process.env.TOKEN;
 
     if (token === query) {
       if (param === 'beginner') {
