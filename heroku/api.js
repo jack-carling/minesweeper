@@ -4,7 +4,7 @@ module.exports = (app) => {
     const query = req.query.t;
     let response = { success: true };
 
-    const token = process.env.VITE_T;
+    const token = process.env.TOKEN;
 
     if (token === query) {
       const date = Date.now();
