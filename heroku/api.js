@@ -1,9 +1,12 @@
 module.exports = (app) => {
   const Highscore = require('./models');
   app.post('/api/highscore', async (req, res) => {
-    const host = req.hostname;
+    const query = req.query.t;
     let response = { success: true };
-    if (host === 'minesweeper-ts.herokuapp.com') {
+
+    const token = process.env.VITE_T;
+
+    if (token === query) {
       const date = Date.now();
       const data = { date, ...req.body };
       const db = new Highscore(data);
@@ -15,18 +18,20 @@ module.exports = (app) => {
     } else {
       response = {
         success: false,
-        message: 'Error: Invalid host',
+        message: 'Error: Invalid token',
       };
     }
     res.json(response);
   });
   app.get('/api/highscore/:difficulty', async (req, res) => {
-    const host = req.hostname;
     const param = req.params.difficulty;
+    const query = req.query.t;
     let response = { success: true };
     let data;
 
-    if (host === 'minesweeper-ts.herokuapp.com') {
+    const token = process.env.VITE_T;
+
+    if (token === query) {
       if (param === 'beginner') {
         data = await Highscore.find({ difficulty: 'Beginner' }).sort({ time: 1 }).limit(25);
       } else if (param === 'intermediate') {
@@ -44,7 +49,7 @@ module.exports = (app) => {
     } else {
       response = {
         success: false,
-        message: 'Error: Invalid host',
+        message: 'Error: Invalid token',
       };
     }
     response.data = data;
