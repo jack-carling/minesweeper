@@ -102,10 +102,13 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.smoothWidth = this.width * 1000;
-    this.smoothHeight = this.height * 1000;
-    this.smoothBombs = this.bombs * 1000;
-    this.smoothMax = this.maxBombs * 1000;
+    // Input='range' not updating properly on mount
+    window.setTimeout(() => {
+      this.smoothWidth = this.width * 1000;
+      this.smoothHeight = this.height * 1000;
+      this.smoothMax = this.maxBombs * 1000;
+      this.smoothBombs = this.bombs * 1000;
+    }, 1);
   },
   watch: {
     smoothWidth() {

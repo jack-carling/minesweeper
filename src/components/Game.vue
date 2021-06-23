@@ -411,15 +411,17 @@ div.game-wrapper {
   position: relative;
 }
 div.phone-info {
-  max-width: calc(100% - 2rem);
+  max-width: 100%;
+  max-height: calc(100% - 2rem);
   height: min-content;
+  overflow-y: auto;
   text-align: center;
   padding: 1rem;
   border-radius: 1rem;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  top: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
   margin: auto;
   color: #f2f2f2;
   display: flex;

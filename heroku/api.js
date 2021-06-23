@@ -1,6 +1,15 @@
 module.exports = (app) => {
+  const cors = require('cors');
+
+  app.use(cors());
+
+  const corsOptions = {
+    origin: 'https://minesweeper-ts.herokuapp.com/',
+    optionsSuccessStatus: 200,
+  };
+
   const Highscore = require('./models');
-  app.post('/api/highscore', async (req, res) => {
+  app.post('/api/highscore', cors(corsOptions), async (req, res) => {
     const date = Date.now();
     const data = { date, ...req.body };
     const db = new Highscore(data);
@@ -11,7 +20,7 @@ module.exports = (app) => {
     }
     res.json({ success: true });
   });
-  app.get('/api/highscore/:difficulty', async (req, res) => {
+  app.get('/api/highscore/:difficulty', cors(corsOptions), async (req, res) => {
     const param = req.params.difficulty;
 
     let response = { success: true };
