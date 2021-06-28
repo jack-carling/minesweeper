@@ -95,8 +95,7 @@ export default defineComponent({
       this.players = [...players];
     },
     async getHighscores() {
-      const t = import.meta.env.VITE_T;
-      let res: any = await fetch(`/api/highscore/${this.current}?t=${t}`);
+      let res: any = await fetch(`/api/highscore/${this.current}`);
       res = await res.json();
       if (res.success) {
         this.emptyPlayers();

@@ -21,9 +21,7 @@ export async function saveHighscoreDatabase(time: number) {
     percent,
   };
 
-  const t = import.meta.env.VITE_T;
-
-  let res = await fetch(`/api/highscore?t=${t}`, {
+  let res = await fetch(`/api/highscore`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
