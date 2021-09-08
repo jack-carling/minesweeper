@@ -166,13 +166,29 @@ module.exports = (app) => {
     let data;
 
     if (param === 'beginner') {
-      data = await Highscore.find({ difficulty: 'Beginner' }).sort({ time: 1 }).limit(25);
+      try {
+        data = await Highscore.find({ difficulty: 'Beginner' }).sort({ time: 1 }).limit(25);
+      } catch (error) {
+        console.log(error);
+      }
     } else if (param === 'intermediate') {
-      data = await Highscore.find({ difficulty: 'Intermediate' }).sort({ time: 1 }).limit(25);
+      try {
+        data = await Highscore.find({ difficulty: 'Intermediate' }).sort({ time: 1 }).limit(25);
+      } catch (error) {
+        console.log(error);
+      }
     } else if (param === 'expert') {
-      data = await Highscore.find({ difficulty: 'Expert' }).sort({ time: 1 }).limit(25);
+      try {
+        data = await Highscore.find({ difficulty: 'Expert' }).sort({ time: 1 }).limit(25);
+      } catch (error) {
+        console.log(error);
+      }
     } else if (param === 'custom') {
-      data = await Highscore.find({ difficulty: 'Custom' }).sort({ percent: -1, time: 1 }).limit(25);
+      try {
+        data = await Highscore.find({ difficulty: 'Custom' }).sort({ percent: -1, time: 1 }).limit(25);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       response = {
         success: false,

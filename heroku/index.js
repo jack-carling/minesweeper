@@ -8,12 +8,11 @@ const app = express();
 app.use(express.static(path.join(__dirname, '../dist')));
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_DB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-});
+async function connect() {
+  await mongoose.connect(process.env.MONGO_DB);
+}
+
+connect().catch((error) => console.log(error));
 
 require('./api')(app);
 
