@@ -14,6 +14,10 @@ If the first click is a left-click it will never be a mine in any game.
 
 To win the game, players must uncover all non-mine cells, at which point, the timer is stopped. Flagging all the mined cells is not required.
 
+## Screenshot
+
+![screenshot](https://user-images.githubusercontent.com/72305598/133389382-ff75eaa6-ebb4-4d7b-9acf-b4c903931337.jpg)
+
 ## Installation
 
 ```bash
