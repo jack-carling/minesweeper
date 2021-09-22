@@ -1,8 +1,9 @@
 import settings from './settings';
+import type { SquareObject } from './interfaces';
 
-let emptyArray: Array<object> = [];
-let bombsArray: Array<object> = [];
-let board: Array<any> = [];
+let emptyArray: SquareObject[] = [];
+let bombsArray: SquareObject[] = [];
+let board: SquareObject[] = [];
 
 export function initBoard() {
   emptyArray = [];
@@ -12,7 +13,7 @@ export function initBoard() {
   const width = settings.width;
   const height = settings.height;
   const bombs = settings.bombs;
-  const size: Number = width * height - bombs;
+  const size: number = width * height - bombs;
 
   for (let i = 0; i < size; i++) {
     emptyArray.push({

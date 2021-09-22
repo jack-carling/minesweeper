@@ -57,6 +57,7 @@ import { defineComponent } from 'vue';
 import Square from './Square.vue';
 import Prompt from './Prompt.vue';
 import AutoSave from './AutoSave.vue';
+import type { SquareObject } from '../services/interfaces';
 
 import {
   checkEmptySquares,
@@ -79,7 +80,7 @@ export default defineComponent({
   },
   data() {
     return {
-      board: [] as Array<Object>,
+      board: [] as SquareObject[],
       gameOver: false,
       first: true,
       gameOverText: '',
@@ -102,7 +103,7 @@ export default defineComponent({
   },
   emits: ['main-menu'],
   computed: {
-    phoneModeButton(): String {
+    phoneModeButton(): string {
       if (this.phoneMode) {
         return 'Mode On';
       } else {
@@ -115,7 +116,7 @@ export default defineComponent({
       this.board = initBoard();
       this.flags = settings.bombs;
     },
-    scrollWrapper(e: any) {
+    scrollWrapper(e: TouchEvent) {
       if (!this.scrolling) return;
       const gameBoardWrapper = this.$refs.wrapper as HTMLElement;
       const distanceX = this.scrollPosition - e.touches[0].screenX;
@@ -131,7 +132,7 @@ export default defineComponent({
         this.showPhoneModeInfo = false;
       }
     },
-    handleTouch(square: any, e: any) {
+    handleTouch(square: SquareObject, e: TouchEvent) {
       if (e.touches.length === 2) {
         this.scrolling = true;
         const gameBoardWrapper = this.$refs.wrapper as HTMLElement;
@@ -153,7 +154,7 @@ export default defineComponent({
         this.longTouch = true;
       }, 100);
     },
-    handleSquare(square: any, index: number, e: any) {
+    handleSquare(square: SquareObject, index: number, e: Partial<MouseEvent & TouchEvent>) {
       if (!this.timer) this.handleTimer(true);
       if (this.gameOver) return;
       if (square.reveal) this.handleValue(square, index);
@@ -187,7 +188,7 @@ export default defineComponent({
       }
       square.reveal = true;
     },
-    handleValue(square: any, index: number) {
+    handleValue(square: SquareObject, index: number) {
       if (this.gameOver) return;
       if (square.flag) return;
       if (!square.value) return;
@@ -197,14 +198,14 @@ export default defineComponent({
         this.board = result.board;
         const bomb = result.bomb;
         if (bomb.hit) {
-          const square: any = this.board[bomb.index];
+          const square: SquareObject = this.board[bomb.index];
           square.type = 'bomb-hit';
           this.board = revealBombs(this.board);
           this.handleLoseGame();
         }
       }
     },
-    handleFlag(square: any) {
+    handleFlag(square: SquareObject) {
       if (this.gameOver) return;
       if (square.reveal) return;
       if (!this.timer) this.handleTimer(true);
@@ -235,7 +236,7 @@ export default defineComponent({
       if (this.flags === 0) {
         const totalBombs = settings.bombs;
         let correctFlags = 0;
-        let square: any;
+        let square: SquareObject = { flag: false, reveal: false, type: 'valid', value: 0 };
         for (square of this.board) {
           if (square.flag && square.type === 'bomb') {
             correctFlags++;
@@ -248,7 +249,7 @@ export default defineComponent({
       } else {
         const totalSquares = this.board.length - settings.bombs;
         let revealedSquares = 0;
-        let square: any;
+        let square: SquareObject = { flag: false, reveal: false, type: 'valid', value: 0 };
         for (square of this.board) {
           if (square.reveal && square.type === 'valid') {
             revealedSquares++;
@@ -289,7 +290,7 @@ export default defineComponent({
     displayTime() {
       return time(this.time);
     },
-    handleKey(e: any) {
+    handleKey(e: KeyboardEvent) {
       if (this.showPrompt) return;
       if (e.code === 'KeyR') {
         this.resetGame();

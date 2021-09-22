@@ -1,11 +1,6 @@
-interface settings {
-  width: number;
-  height: number;
-  bombs: number;
-  size?: number;
-}
+import type { SettingsObject } from './interfaces';
 
-let settings: settings = {
+let settings: SettingsObject = {
   width: 0,
   height: 0,
   bombs: 0,

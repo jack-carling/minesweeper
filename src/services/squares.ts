@@ -1,6 +1,8 @@
 import settings from './settings';
 
-export function checkEmptySquares(board: any, i: number) {
+import type { Bomb, Data, SquareObject } from './interfaces';
+
+export function checkEmptySquares(board: SquareObject[], i: number) {
   const { north, northEast, east, southEast, south, southWest, west, northWest, isRightEdge, isLeftEdge } =
     getPositionData(i);
 
@@ -88,7 +90,7 @@ export function checkEmptySquares(board: any, i: number) {
   return board;
 }
 
-export function revealBombs(board: any) {
+export function revealBombs(board: SquareObject[]) {
   for (let i = 0; i < board.length; i++) {
     if (board[i].type === 'bomb') {
       if (board[i].flag) continue;
@@ -104,7 +106,7 @@ export function revealBombs(board: any) {
   return board;
 }
 
-export function revealAllValid(board: any) {
+export function revealAllValid(board: SquareObject[]) {
   for (let i = 0; i < board.length; i++) {
     if (board[i].type === 'valid') {
       if (board[i].flag) continue;
@@ -117,7 +119,7 @@ export function revealAllValid(board: any) {
   return board;
 }
 
-export function checkAdjacentFlags(board: any, i: number, value: number) {
+export function checkAdjacentFlags(board: SquareObject[], i: number, value: number) {
   const { north, northEast, east, southEast, south, southWest, west, northWest, isRightEdge, isLeftEdge } =
     getPositionData(i);
 
@@ -139,14 +141,9 @@ export function checkAdjacentFlags(board: any, i: number, value: number) {
   }
 }
 
-export function checkAdjacentSquares(board: any, i: number) {
+export function checkAdjacentSquares(board: SquareObject[], i: number) {
   const { north, northEast, east, southEast, south, southWest, west, northWest, isRightEdge, isLeftEdge } =
     getPositionData(i);
-
-  type Bomb = {
-    hit: boolean;
-    index: number;
-  };
 
   let bomb = { hit: false } as Bomb;
 
@@ -252,19 +249,6 @@ export function checkAdjacentSquares(board: any, i: number) {
 
 function getPositionData(i: number) {
   const width = settings.width;
-
-  type Data = {
-    north: number;
-    northEast: number;
-    east: number;
-    southEast: number;
-    south: number;
-    southWest: number;
-    west: number;
-    northWest: number;
-    isLeftEdge: Boolean;
-    isRightEdge: Boolean;
-  };
 
   let data = {} as Data;
 

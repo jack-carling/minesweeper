@@ -24,7 +24,7 @@
           <th>Time</th>
         </tr>
         <tr v-for="(player, i) in players" :key="i">
-          <td>{{ displayNumber(player, i) }}</td>
+          <td>{{ displayNumber(i) }}</td>
           <td class="name">
             <div class="name" v-html="player.name"></div>
           </td>
@@ -47,13 +47,14 @@
 import { defineComponent } from 'vue';
 
 import { time } from '../services/time';
+import type { Player, ResponseData } from '../services/interfaces';
 
 export default defineComponent({
   data() {
     return {
       showScrollButton: false,
       current: localStorage.highscoreCategory || 'beginner',
-      players: [] as Array<any>,
+      players: [] as Player[],
     };
   },
   emits: ['close-highscores'],
@@ -66,24 +67,24 @@ export default defineComponent({
       localStorage.highscoreCategory = this.current;
       this.getHighscores();
     },
-    displayNumber(player: any, i: number) {
+    displayNumber(i: number) {
       const index = i + 1;
       return `${index}.`;
     },
-    displayBoard(player: any) {
+    displayBoard(player: Player) {
       const { width, height, bombs } = player;
       if (player?.name) {
         return `${width}x${height} (${bombs})`;
       }
     },
-    displayPercent(percent: number) {
+    displayPercent(percent: string) {
       if (percent) {
-        return Math.round(percent * 100) + '%';
+        return Math.round(Number(percent) * 100) + '%';
       }
     },
-    displayTime(player: any) {
+    displayTime(player: Player) {
       if (player?.time !== '') {
-        return time(player.time);
+        return time(Number(player.time));
       }
     },
     emptyPlayers() {
@@ -95,11 +96,11 @@ export default defineComponent({
       this.players = [...players];
     },
     async getHighscores() {
-      let res: any = await fetch(`/api/highscore/${this.current}`);
-      res = await res.json();
-      if (res.success) {
+      const response: Response = await fetch(`/api/highscore/${this.current}`);
+      const responseData: ResponseData = await response.json();
+      if (responseData.success) {
         this.emptyPlayers();
-        let data = [...res.data, ...this.players];
+        let data = [...responseData.data, ...this.players];
         data = data.slice(0, 25);
         if (data[0].name) {
           data[0].name = `<i class="material-icons gold">emoji_events</i><span>${data[0].name}</span>`;
