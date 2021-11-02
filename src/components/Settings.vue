@@ -188,6 +188,7 @@ input[type='range']::-moz-range-track {
 }
 input[type='range']::-webkit-slider-thumb {
   background: #f44336;
+  border: none;
   width: 24px;
   height: 24px;
   margin-top: -10px;
