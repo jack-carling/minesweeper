@@ -12,7 +12,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "mongoose": "^6.0.12",
-    "vue": "^3.2.20"
+    "vue": "^3.2.21"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.4",
