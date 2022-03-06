@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.0",
-    "express": "^4.17.2",
+    "express": "^4.17.3",
     "mongoose": "^6.2.4",
     "vue": "^3.2.31"
   },
