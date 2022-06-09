@@ -9,7 +9,7 @@
     "db": "nodemon \"heroku/index\""
   },
   "dependencies": {
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.1",
     "express": "^4.17.3",
     "mongoose": "^6.3.5",
     "vue": "^3.2.36"
